@@ -92,6 +92,16 @@ rockyou.txt did not work.
 
 > Here I lost some time looking at the highlighted data in the pdf which lead to nothing
 
+
+```
+EDIT: It was an unintended solve, In the PDF there was 4 word highlighted: Kayla Banks 68697602 Shelly. We was suposed to build a custom wordlist
+
+But it is in rockyou.txt
+cat /usr/share/wordlists/rockyou.txt | grep SHELLY
+SHELLY
+[...]
+```
+
 My teamate searched the `d3ad0ne` reference from the description and its an hashcat rule file 
 https://github.com/hashcat/hashcat/blob/master/rules/d3ad0ne.rule
 
