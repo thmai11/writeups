@@ -1,0 +1,31 @@
+rock flag with 183, 198, 155, 192, 205, 156, 118, 191, 198, 179, 167, 131, 185, 158, 162, 127, 178, 183, 100, 192, 198, 162, 119, 174, 199, 117, 85, 207
+let key be "ST4RR0CK"
+
+modulo_func takes number, diviser
+    let quotient be number over diviser
+    turn down quotient
+    let product be quotient times diviser
+    let remainder be number minus product
+    if remainder is less than 0 let result be remainder with diviser otherwise let result be remainder 
+give back result
+
+decrypt takes key
+    shatter key into key_array 
+    key_len = key_array + 0
+    let flag_length = 28
+    let final_flag be ""
+    let count be 256
+    for counter in flag_length
+        let key_index be modulo_func taking counter, key_len
+        let key_char be key_array at key_index
+        let encoded_char be flag at counter
+        burn key_char into ord
+        let temp_decoded_char be encoded_char minus ord
+        let decoded_char be modulo_func taking temp_decoded_char, count
+        burn decoded_char into flag_char
+        final_flag = final_flag + flag_char
+    
+    give back final_flag
+
+let flag be decrypt taking key
+shout flag
